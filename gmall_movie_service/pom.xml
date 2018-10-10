@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>com.atguigu.gmall</groupId>
+		<artifactId>gmall_parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>gmall_movie_service</artifactId>
+
+	<dependencies>
+		<!--对interface进行implements-->
+		<dependency>
+			<groupId>com.atguigu.gmall</groupId>
+			<artifactId>gmall_interface</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!--依赖serviceutil-->
+		<dependency>
+			<groupId>com.atguigu.gmall</groupId>
+			<artifactId>gmall_serviceutil</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+	</dependencies>
+
+</project>
