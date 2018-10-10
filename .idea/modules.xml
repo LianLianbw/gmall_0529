@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/gmall_0529.iml" filepath="$PROJECT_DIR$/gmall_0529.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gmall_bean/gmall_bean.iml" filepath="$PROJECT_DIR$/gmall_bean/gmall_bean.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gmall_common/gmall_common.iml" filepath="$PROJECT_DIR$/gmall_common/gmall_common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gmall_interface/gmall_interface.iml" filepath="$PROJECT_DIR$/gmall_interface/gmall_interface.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gmall_manager_service/gmall_manager_service.iml" filepath="$PROJECT_DIR$/gmall_manager_service/gmall_manager_service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gmall_manager_web/gmall_manager_web.iml" filepath="$PROJECT_DIR$/gmall_manager_web/gmall_manager_web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gmall_movie_service/gmall_movie_service.iml" filepath="$PROJECT_DIR$/gmall_movie_service/gmall_movie_service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gmall_parent/gmall_parent.iml" filepath="$PROJECT_DIR$/gmall_parent/gmall_parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gmall_serviceutil/gmall_serviceutil.iml" filepath="$PROJECT_DIR$/gmall_serviceutil/gmall_serviceutil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gmall_user_web/gmall_user_web.iml" filepath="$PROJECT_DIR$/gmall_user_web/gmall_user_web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gmall_webutil/gmall_webutil.iml" filepath="$PROJECT_DIR$/gmall_webutil/gmall_webutil.iml" />
+    </modules>
+  </component>
+</project>

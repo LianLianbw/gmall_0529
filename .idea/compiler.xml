@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="gmall-user-service" />
+        <module name="gmall_bean" />
+        <module name="gmall_common" />
+        <module name="gmall_interface" />
+        <module name="gmall_manager_service" />
+        <module name="gmall_manager_web" />
+        <module name="gmall_movie_service" />
+        <module name="gmall_serviceutil" />
+        <module name="gmall_user_web" />
+        <module name="gmall_webutil" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="gmall-user-service" target="1.8" />
+      <module name="gmall_0529" target="1.5" />
+      <module name="gmall_bean" target="1.8" />
+      <module name="gmall_common" target="1.8" />
+      <module name="gmall_interface" target="1.8" />
+      <module name="gmall_manager_service" target="1.8" />
+      <module name="gmall_manager_web" target="1.8" />
+      <module name="gmall_movie_service" target="1.8" />
+      <module name="gmall_parent" target="1.8" />
+      <module name="gmall_serviceutil" target="1.8" />
+      <module name="gmall_user_service" target="1.8" />
+      <module name="gmall_user_web" target="1.8" />
+      <module name="gmall_webutil" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
