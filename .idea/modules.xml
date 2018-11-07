@@ -26,7 +26,6 @@
       <module fileurl="file://$PROJECT_DIR$/gmall_webutil/gmall_webutil.iml" filepath="$PROJECT_DIR$/gmall_webutil/gmall_webutil.iml" />
       <module fileurl="file://$PROJECT_DIR$/gware-manage/gware-manage.iml" filepath="$PROJECT_DIR$/gware-manage/gware-manage.iml" />
       <module fileurl="file://$PROJECT_DIR$/rabbitmq-demo/rabbitmq-demo.iml" filepath="$PROJECT_DIR$/rabbitmq-demo/rabbitmq-demo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../ssm-finance/ssm-finance.iml" filepath="$PROJECT_DIR$/../ssm-finance/ssm-finance.iml" />
     </modules>
   </component>
 </project>
