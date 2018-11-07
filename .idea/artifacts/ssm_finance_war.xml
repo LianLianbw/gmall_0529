@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ssm-finance:war">
+    <output-path>$PROJECT_DIR$/../ssm-finance/target</output-path>
+    <root id="archive" name="ssm-finance-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="ssm-finance:war exploded" />
+    </root>
+  </artifact>
+</component>

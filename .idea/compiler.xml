@@ -2,36 +2,76 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="gmall-payment-service" />
+        <module name="gmall-payment-web" />
         <module name="gmall-user-service" />
         <module name="gmall_bean" />
+        <module name="gmall_cart_service" />
+        <module name="gmall_cart_web" />
         <module name="gmall_common" />
         <module name="gmall_interface" />
+        <module name="gmall_item_web" />
         <module name="gmall_manager_service" />
         <module name="gmall_manager_web" />
         <module name="gmall_movie_service" />
+        <module name="gmall_order_service" />
+        <module name="gmall_order_web" />
+        <module name="gmall_passport_service" />
+        <module name="gmall_passport_web" />
+        <module name="gmall_payment_service" />
+        <module name="gmall_payment_web" />
+        <module name="gmall_search_service" />
+        <module name="gmall_search_web" />
         <module name="gmall_serviceutil" />
         <module name="gmall_user_web" />
         <module name="gmall_webutil" />
+        <module name="gware-manage" />
+        <module name="rabbitmq-demo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="fastdfs-client-java" target="1.6" />
+      <module name="finance" target="1.5" />
+      <module name="finance-bean" target="1.8" />
+      <module name="finance-common" target="1.8" />
+      <module name="finance-interface" target="1.8" />
+      <module name="finance-parent" target="1.8" />
+      <module name="finance-serviceutil" target="1.8" />
+      <module name="finance-webutil" target="1.8" />
+      <module name="gmall-payment-service" target="1.5" />
+      <module name="gmall-payment-web" target="1.5" />
       <module name="gmall-user-service" target="1.8" />
       <module name="gmall_0529" target="1.5" />
       <module name="gmall_bean" target="1.8" />
+      <module name="gmall_cart_service" target="1.8" />
+      <module name="gmall_cart_web" target="1.8" />
       <module name="gmall_common" target="1.8" />
       <module name="gmall_interface" target="1.8" />
+      <module name="gmall_item_web" target="1.8" />
       <module name="gmall_manager_service" target="1.8" />
       <module name="gmall_manager_web" target="1.8" />
       <module name="gmall_movie_service" target="1.8" />
+      <module name="gmall_order_service" target="1.8" />
+      <module name="gmall_order_web" target="1.8" />
       <module name="gmall_parent" target="1.8" />
+      <module name="gmall_passport_service" target="1.8" />
+      <module name="gmall_passport_web" target="1.8" />
+      <module name="gmall_payment_service" target="1.8" />
+      <module name="gmall_payment_web" target="1.8" />
+      <module name="gmall_search_service" target="1.8" />
+      <module name="gmall_search_web" target="1.8" />
       <module name="gmall_serviceutil" target="1.8" />
       <module name="gmall_user_service" target="1.8" />
       <module name="gmall_user_web" target="1.8" />
       <module name="gmall_webutil" target="1.8" />
+      <module name="gware-manage" target="1.8" />
+      <module name="rabbitmq-demo" target="1.8" />
+      <module name="ssm-finance" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>
