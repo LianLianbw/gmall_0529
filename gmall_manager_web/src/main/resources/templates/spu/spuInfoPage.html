@@ -21,14 +21,25 @@
         <br/><br/>
 
         <!----------------商品图片列表 ----------------------->
-
         <table id="spuImgDg" class="easyui-datagrid" title="商品图片列表"
-               data-options="singleSelect:true,method:'get',toolbar:'#spuImgTootbar'" ></table>
+               data-options="singleSelect:true,method:'get',toolbar:'#spuImgTootbar',
+               idField:'id',view:detailview,detailFormatter:spuImgTableDetailFormatter" >
+            <thead>
+                <tr>
+                    <!--idField:'id';快速使用id这一列的值检索到当前行的索引-->
+                    <th data-options="field:'id',width:100">图片id</th>
+                    <th data-options="field:'imgName',width:200">图片名称</th>
+                    <th data-options="field:'imgUrl',width:100,align:'right',hidden:true">图片url</th>
+                    <th data-options="field:'process',width:200,formatter:spuImgProcessCellFormatter">上传进度</th>
+                    <th data-options="field:'status',width:100,formatter:spuImgStatusCellFormatter">图片状态</th>
+                </tr>
+            </thead>
+        </table>
 
         <!----------------图片列表工具栏----------------------->
         <div id="spuImgTootbar" style="padding:5px;height:auto"  >
             <div style="margin-bottom:5px">
-                <a href="#" id="spuImgAdd" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加图片</a>
+                <a href="#" id="spuImgAddBtn" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加图片</a>
                 <a href="#" id="spuImgUploadBtn" class="easyui-linkbutton" iconCls="icon-save" plain="true" >图片上传</a>
                 <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
             </div>
@@ -37,286 +48,259 @@
         <br/><br/>
         <!----------------销售属性列表---------------------------->
         <table id="spuSaleAttrDg" class="easyui-datagrid" title="销售属性列表"
-               data-options="singleSelect:true,method:'get',toolbar:'#spuSaleAttrTootbar'" ></table>
+               data-options="singleSelect:true,method:'get',toolbar:'#spuSaleAttrTootbar'" >
+            <thead>
+            <!--表格以后要用的所以数据都写上,隐藏的数据不显示即可-->
+                <tr>
+                    <th data-options="field:'id',width:100">标识</th>
+                    <th data-options="field:'saleAttrId',width:100">销售属性id</th>
+                    <th data-options="field:'spuId',width:100,hidden:true">spuId</th>
+                    <th data-options="field:'saleAttrName',width:300">销售属性名称</th>
+                    <th data-options="field:'saleAttrValues',hidden:true">销售所有值</th>
+                </tr>
+            </thead>
+        </table>
 
         <!----------------销售属性列表工具栏----------------------->
         <div id="spuSaleAttrTootbar" style="padding:5px;height:auto"  >
             <div style="margin-bottom:5px">
-                <a href="#" id="spuSaleAttrAddBtn" class="easyui-linkbutton" iconCls="icon-add" onclick="addSpuSaleAttr()" plain="true">添加销售属性</a>
-                <a href="#" id="spuSaleAttrEditBtn" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editSpuSaleAttr()">编辑销售属性</a>
+                <a href="#" id="spuSaleAttrAddBtn" class="easyui-linkbutton" iconCls="icon-add"   plain="true">添加销售属性</a>
+                <a href="#" id="spuSaleAttrEditBtn" class="easyui-linkbutton" iconCls="icon-edit" plain="true" >编辑销售属性</a>
                 <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" >删除</a>
             </div>
         </div>
-
-
-
-        <div th:include="spuSaleAttrPage"></div>
-        <!-------------->
-
-
 
     </form>
 </div>
 <!----------------弹出框的按钮组----------------------->
 <div id="spuBtns">
-    <a href="#" class="easyui-linkbutton" onclick="saveSpu()">保 存</a>
-    <a href="#" class="easyui-linkbutton" onclick="closeSpu()">关 闭</a>
+    <a href="#" class="easyui-linkbutton" onclick="saveAllSpuInfos()">保 存</a>
+    <a href="#" class="easyui-linkbutton" onclick="$('#spu_dlg').dialog('close')">关 闭</a>
 </div>
 
 
 
-<script th:inline="javascript">
+<div th:include="spu/spuSaleAttrPage"></div>
+<!-------------->
+
+<script language="javascript">
 
 
-    function initSpuInfoDlg(spuInfo){
-        //打开对话框
-        $('#spu_dlg').dialog("open");
-        console.log("初始化文本"+spuInfo);
+    //保存所有spu的数据
+    function saveAllSpuInfos() {
+        //1、获取到所有的spu数据
+        /**
+         *     private String spuName;//商品名字
+         private String description;//描述
+         private Integer catalog3Id;//三级分类id
 
-        //初始化表单
-        initSpuForm(spuInfo);
+         @TableField(exist = false)
+         private List<SpuImage> spuImages;//spu图片
+         @TableField(exist = false)
+         private List<SpuSaleAttr> spuSaleAttrs;//spu所有销售属性已经对应的
+         *
+         *
+         */
 
-        //初始化图片表格
-        initSpuImgListDatagrid(spuInfo);
+        var spuName = $("#spuName").textbox('getValue');//商品名字
+        var description = $("#description").textbox('getValue');//描述
+        var catalog3Id = getSpuCatalog3Info().id;
+        var spuImages = $("#spuImgDg").datagrid("getRows");//所有图片
+        var spuSaleAttrs = $("#spuSaleAttrDg").datagrid("getRows");//所有销售属性的值
 
-        //初始化上传控件
-        initUploader();
-
-        //初始化销售属性列表
-        initSpuSaleAttrListDatagrid(spuInfo);
-    }
-
-
-    function addSpuSaleAttr(){
-
-        initSpuSaleAttrDlg();
-    }
-
-    function editSpuSaleAttr(){
-        var spuId= $("#spuId").val();
-        var spuSaleAttr = $('#spuSaleAttrDg').datagrid('getSelected');
-        initSpuSaleAttrDlg(spuId,spuSaleAttr);
-    }
-
-    function initSpuForm(spuInfo){
-        //清空文本框
-        $("#spuForm").form("clear");
-
-        if(spuInfo==undefined) {
-            return;
-        }
-
-            $("#spuName").textbox("setValue",spuInfo.spuName);
-            $("#description").textbox("setValue",spuInfo.description);
-            $("#spuId").val(spuInfo.id);
-
-    }
-
-
-    /*<![CDATA[*/
-    function saveSpu() {
-        var spuInfo = {};
-        //保存单独的字段
-        spuInfo["id"] = $("#spuId").val();
-        spuInfo["spuName"] = $("#spuName").val();
-        spuInfo["description"] = $("#description").val();
-        spuInfo["catalog3Id"] = $("#ctg3ForSpuList").combobox('getValue');
-
-        //保存图片表格字段
-        var spuImgDgRows = $("#spuImgDg").datagrid('getRows');
-        for (var i = 0; i < spuImgDgRows.length; i++) {
-            spuInfo["spuImageList[" + i + "].imgName"] = spuImgDgRows[i].imgName;  //要跟bean中字段对齐
-            spuInfo["spuImageList[" + i + "].imgUrl"] = spuImgDgRows[i].imgUrl;
-        }
-
-        //保存销售属性中的字段
-        var spuSaleAttrDgRows = $("#spuSaleAttrDg").datagrid('getRows');
-        for (var i = 0; i < spuSaleAttrDgRows.length; i++) {
-            spuInfo["spuSaleAttrList[" + i + "].id"] = spuSaleAttrDgRows[i].id;  //要跟bean中字段对齐
-            spuInfo["spuSaleAttrList[" + i + "].saleAttrId"] = spuSaleAttrDgRows[i].saleAttrId;  //要跟bean中字段对齐
-            spuInfo["spuSaleAttrList[" + i + "].saleAttrName"] = spuSaleAttrDgRows[i].saleAttrName;
-            //保存销售属性值的字段
-            var saleAttrValueRows = spuSaleAttrDgRows[i].spuSaleAttrValueJson.rows;
-            for (var j = 0; j < saleAttrValueRows.length; j++) {
-
-                spuInfo["spuSaleAttrList[" + i + "].spuSaleAttrValueList[" + j + "].id"] = saleAttrValueRows[j].id;
-                spuInfo["spuSaleAttrList[" + i + "].spuSaleAttrValueList[" + j + "].saleAttrValueName"] = saleAttrValueRows[j].saleAttrValueName;
-                spuInfo["spuSaleAttrList[" + i + "].spuSaleAttrValueList[" + j + "].saleAttrId"] = spuSaleAttrDgRows[i].saleAttrId;
+        //加工spuImages
+        $.each(spuImages,function () {
+            if(isNaN(this.id)){
+                this.id = null;
             }
+        })
 
+        var spuInfo = {
+            spuName:spuName,
+            description:description,
+            catalog3Id:catalog3Id,
+            spuImages:spuImages,
+            spuSaleAttrs:spuSaleAttrs
         }
-
-        console.log(JSON.stringify(spuInfo));
-
-        //ajax 保存到后台
-        $.post("saveSpuInfo", spuInfo, function (data) {
-            $("#spu_dlg").dialog("close");
-            $("#spulist_dg").datagrid("reload");
-        });
-    }
-
-        function initSpuImgListDatagrid(spuInfo) {
-            $('#spuImgDg').datagrid({url:""});
-            $('#spuImgDg').datagrid('loadData', {total: 0, rows: []});
-            console.log("初始化表格:"+spuInfo);
-            spuImgDg = $("#spuImgDg").datagrid({
-                idField: 'fileId',    //标识行的主键  可以利用getRowIndex进行查询
-                columns: [[
-                    {field: 'fileId', title: '文件编号', width: '15%'},//隐藏文件页面内部编号
-                    {
-                        field: 'imgName', title: '图片简称', width: '20%',
-                        editor: {
-                            type: 'validatebox', options: {required: true}  //必填项
-                        }
-                    },
-                    {field: 'imgUrl', title: '图片路径', hidden: true},  //隐藏真实路径
-                    {
-                        field: 'progress', title: '上传进度', width: '20%',
-                        formatter: function (value, row, index) {
-                            console.log("更新进度条！！" + value);
-                            if (!value) {
-                                value = 0;
-                            }
-                            if(row.imgUrl){
-                                value=100;
-                            }
-                            var htmlstr =
-                                "<div class='easyui-progressbar progressbar' style='width:100px;height:20px;' value='" + value + "' text='" + value + "'%>" +
-                                "<div class='progressbar-text'  style='width: 100px; height: 20px; line-height: 20px;'>" + value + "%</div>" +
-                                "<div class='progressbar-value' style='width:" + value + "%; height: 20px; line-height: 20px;'>" +
-                                "<div class='progressbar-text' style='width: 100px; height: 20px; line-height: 20px;'>" + value + "%</div>" +
-                                "</div>" +
-                                "</div>";
-                            return htmlstr;
-                        }
-                    },
-                    {
-                        field: 'imgState', title: '上传状态', width: '20%',           //如果存在路径表示上传成功
-                        formatter: function (value, row, index) {
-                            console.log('row.imgUrl:' + row.imgUrl);
-                            if (row.imgUrl != undefined && row.imgUrl != '') {
-                                return '已上传';
-                            } else {
-                                return '等待上传';
-                            }
-                        }
-                    }
-                ]],
-                onDblClickRow: function (rowIndex, rowData) {
-                    //双击开启编辑行
-                    spuImgDg.datagrid("beginEdit", rowIndex);
-                    //设定当失去焦点时,退出编辑状态
-                    var imgName = rowData.imgName;
-                    $("input.datagrid-editable-input").val(imgName).bind("blur", function (evt) {
-                        spuImgDg.datagrid('endEdit', rowIndex);
-                    });
-                },
-                view: detailview,
-                detailFormatter: function (rowIndex, rowData) {
-                    return "<img src=" + rowData.imgUrl + " style='width:100px;height:100px;'>";
-                }
-            });
-
-            if (spuInfo) {
-                spuImgDg.datagrid({url: "spuImageList?spuId=" + spuInfo.id})
+        var jsonData = JSON.stringify(spuInfo);
+        $.ajax({
+            url:'spu/bigSave',
+            type:'post',
+            data:jsonData,
+            contentType:'application/json',
+            processData:false,
+            success:function (data) {
+                $("#spu_dlg").dialog('close');
+                refreshSpuListTable(null);
+            },
+            error:function () {
+                alert("服务器异常....")
             }
-
-        }
-
-
-   function initUploader(){
-
-            console.log("初始化上传控件");
-
-            var spuImgDg=  $("#spuImgDg");
-            //初始化上传控件
-            var spuImgUploader = WebUploader.create({
-                auto:false,
-                // swf文件路径
-                swf: '/webuploader/Uploader.swf',
-                // 文件接收路径
-                server: '/fileUpload',
-                // 选择文件的按钮。
-                pick: '#spuImgAdd',
-                // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
-                resize: false,
-                //设定文件大小上限 2M
-                fileSingleSizeLimit:2*1024*1024,
-                //可接受的文件类型
-                accept: {
-                    title: 'Images',
-                    extensions: 'gif,jpg,jpeg,bmp,png',
-                    mimeTypes: 'image/*'
-                }
-            });
-            console.log("初始化文件上传控件的响应--fileQueued");
-
-
-            //当用户选择了文件以后，表格要进行增行
-            spuImgUploader.on('fileQueued',function (file) {
-                console.log("用户增加文件:"+file.id+'||'+file.name);
-                var row={
-                    fileId:file.id,
-                    imgName:file.name
-                }
-                spuImgDg.datagrid('appendRow',row);
-            });
-
-
-            //上传过程中，该进度会反复触发
-            spuImgUploader.on( 'uploadProgress', function( file, percentage ) {
-                console.log("更新进度"+file.id);
-                var rowIndex=spuImgDg.datagrid('getRowIndex',file.id);
-                console.log("更新进度2:"+rowIndex);
-                var progessRow={progress:(percentage*100).toFixed(2)};
-                console.log("更新进度3:"+percentage);
-                spuImgDg.datagrid('updateRow', {index:rowIndex,row:progessRow});
-            });
-
-
-            // 上传成功时，要把生成的图片路径返回给表格的行中的url
-            console.log("初始化文件上传控件的响应--uploadSuccess");
-            spuImgUploader.on( 'uploadSuccess', function( file ,response) {
-                console.log("上传完成："+file.id+"||"+response._raw);
-                var fileId=file.id;
-                var rowIndex = spuImgDg.datagrid('getRowIndex',file.id);//通过file.id查询到行号
-                spuImgDg.datagrid('updateRow',
-                    {   index:rowIndex,
-                        row:{imgUrl:response._raw}
-                    });
-            });
-
-
-            $('#spuImgUploadBtn').click(function(){
-                console.log("开始上传");
-                if(spuImgUploader.getFiles().length<=0){
-                    $.messager.alert('警告','没有需要上传的文件','warning');
-                    return;
-                }
-                spuImgUploader.upload();
-            });
+        })
 
     }
 
-    function initSpuSaleAttrListDatagrid(spuInfo){
-        console.log("初始化销售属性表格:"+spuInfo);
-        var spuSaleAttrDg=$('#spuSaleAttrDg').datagrid({url:""});
-         spuSaleAttrDg =$('#spuSaleAttrDg').datagrid('loadData', { total: 0, rows: [] });
 
-        spuSaleAttrDg.datagrid({
-            idField: 'saleAttrId',
-            columns:[[
-                { field:'id',title:'id',hidden:true },
-                { field:'saleAttrId',title:'销售属性Id',width:'35%'},
-                { field:'saleAttrName',title:'销售属性名称',width:'45%'},
-                { field:'spuSaleAttrValueJson',title:'销售属性值暂存',hidden:true, width:'20%'}
-            ]]
-        });
 
-        //有初始数据说明是编辑状态，要加载数据
-        if(spuInfo){
-            spuSaleAttrDg.datagrid({url:"spuSaleAttrList?spuId="+spuInfo.id});
+    //弹出销售属性添加框
+    $("#spuSaleAttrAddBtn").click(function(){
+        $('#saleAttrSelect').combobox("clear");
+        $('#spuSaleAttrValueDg').datagrid('loadData', { total: 0, rows: [] });
+        $("#spuSaleAttr_dlg").dialog("open");
+    })
+
+    //编辑销售属性
+    $("#spuSaleAttrEditBtn").click(function(){
+
+        if($("#spuSaleAttrDg").datagrid('getRows').length==0){
+            $.messager.alert('警告','还没有销售属性,快去添加吧！');
+        }else{
+            if($("#spuSaleAttrDg").datagrid('getSelected')!=null){
+                $("#spuSaleAttrDg").datagrid('getRows');
+                console.log($("#spuSaleAttrDg").datagrid('getSelected'));
+                $("#spuSaleAttr_dlg").dialog("open");
+            }else{
+                $.messager.alert('警告','请先选择一个销售属性!');
+            }
         }
+    })
+
+
+
+    //创建webuplodaer的实例对象
+    //初始化Web Uploader
+    var uploader = WebUploader.create({
+
+        //选完文件后,是否自动上传
+        auto:false,
+
+        //swf文件路径
+        swf: '/webuploader/Uploader.swf',
+
+        //文件接受服务端
+        server: 'file/upload',
+
+        //选择文件的按钮。可选
+        pick: '#spuImgAddBtn',
+
+        //只允许选择图片
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        }
+    })
+
+    //由于默认的生成按钮触发div宽高是1没法点击
+    $("#spuImgAddBtn div:eq(0)").css({
+        width:'100%',
+        height: '100%'
+    })
+
+
+    //监听webuploader上传的几个事件
+    // 当有文件添加进来的时候，在图片的table中显示图片信息
+    uploader.on( 'fileQueued', function( file ) {
+        /**
+         * <th data-options="field:'id',width:100">图片id</th>
+         <th data-options="field:'imgName',width:200">图片名称</th>
+         <th data-options="field:'imgUrl',width:100,align:'right',hidden:true">图片url</th>
+         <th data-options="field:'process',width:200">上传进度</th>
+         <th data-options="field:'status',width:100">图片状态</th>
+         * */
+        $("#spuImgDg").datagrid('appendRow',{
+            id:file.id,
+            imgName:file.name,
+            imgUrl:'',
+            process:0,  //自定义显示进度数据
+            status:'等待上传'
+        })
+    });
+
+    //文件上传过程中创建进度条实时显示,在图片的table中显示图片进度条内容
+    uploader.on( 'uploadProgress', function( file, percentage ) {
+        //构造一个进度条显示数据 0-1
+        var precent = Math.round(percentage*10000)/100
+
+        //修改单元格中当前文件的上传进度
+        //1、找到当前文件在那一行
+        var index = $("#spuImgDg").datagrid('getRowIndex',file.id);
+        //2、修改这一行的process数据
+        $("#spuImgDg").datagrid('updateRow',{
+            index:index,
+            row:{
+                process:precent,
+                status:'正在上传'
+            }
+        });
+    });
+
+    $("#spuImgUploadBtn").click(function(){
+        uploader.upload();
+    })
+
+    // 文件上传成功，在图片的table中显示图片上传状态
+    uploader.on( 'uploadSuccess', function( file,response) {
+        console.log(response)
+        //1、找到当前文件在那一行
+        var index = $("#spuImgDg").datagrid('getRowIndex',file.id);
+        //2、修改这一行的process数据
+        $("#spuImgDg").datagrid('updateRow',{
+            index:index,
+            row:{
+                status:'上传完成',
+                imgUrl:response._raw
+            }
+        });
+    });
+
+    // 文件上传失败，显示上传出错。
+    uploader.on( 'uploadError', function( file ) {
+        console.log(response)
+        //1、找到当前文件在那一行
+        var index = $("#spuImgDg").datagrid('getRowIndex',file.id);
+        //2、修改这一行的process数据
+        $("#spuImgDg").datagrid('updateRow',{
+            index:index,
+            row:{
+                status:'上传失败'
+            }
+        });
+    });
+
+
+    /*
+    * value:本来要显示的数据(单元格传入的数据)
+    * row:当前行的所以信息
+    * index:这一行的索引
+    * */
+    //图片进度单元格格式化方法
+    function spuImgProcessCellFormatter(value,row,index) {
+
+        var processBar = $("<div></div>").progressbar({
+            value:value
+        })
+
+        //由于.html()方法只是返回内容的，不包括外部的包裹标签
+        var html_content = $("<div></div>").append(processBar).html();
+        return html_content; //获取到创建的这个对象的html代码，返回出去
+    }
+
+    //图片状态格式化
+
+    function spuImgStatusCellFormatter(value,row,index){
+        if(value=="上传完成"){
+            return "<lable style='color: green'>"+value+"</lable>"
+        }
+        return "<lable style='color: #00bbee'>"+value+"</lable>"
+
+    }
+
+    //表格详细视图组件格式化器
+    function spuImgTableDetailFormatter(rowIndex, rowData) {
+        console.log(rowIndex)
+        console.log(rowData)
+        return "<img src='"+rowData.imgUrl+"' style='width: 150px;height: auto'/>";
     }
 
 </script>

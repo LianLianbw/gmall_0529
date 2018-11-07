@@ -11,13 +11,24 @@
      closed="true"  data-options="iconCls:'icon-save',resizable:true,modal:false" buttons="#spuSaleAttrBtns" >
   <br/><br/>
     <!------------------从基本销售属性中选择------------->
-    销售属性：  <select name="saleAttr" id="saleAttrSelect"  class="easyui-combobox" data-options="valueField:'id',textField:'name',url:'baseSaleAttrList'" style="width:100px">  </select>
+    销售属性：
+    <select name="saleAttr" id="saleAttrSelect"  class="easyui-combobox"
+            data-options="valueField:'id',textField:'name',url:'spu/base_sale_attr',onSelect:clearSaleAttrValueTable" style="width:100px">  </select>
     <br/><br/>
 
 
     <!----------------销售属性值列表---------------------------->
     <table id="spuSaleAttrValueDg" class="easyui-datagrid" title="销售属性值列表"
-           data-options="singleSelect:true,method:'get',toolbar:'#spuSaleAttrValueTootbar'" ></table>
+           data-options="singleSelect:true,method:'get',toolbar:'#spuSaleAttrValueTootbar',onDblClickRow:spuSaleAttrValueDg_onClickCell" >
+        <thead>
+        <tr>
+            <th data-options="field:'id',width:100">属性值Id</th>
+            <th data-options="field:'saleAttrValueName',width:100,editor:{
+                        type:'validatebox',options:{required:true}
+                    }">属性值</th>
+        </tr>
+        </thead>
+    </table>
 
 
 
@@ -38,94 +49,92 @@
 </div>
 
 <script th:inline="javascript">
-    function initSpuSaleAttrDlg(spuId,spuSaleAttr){
-        //打开弹出框
-        $("#spuSaleAttr_dlg").dialog("open");
-
-        //初始化属性选择的下拉菜单
-        $('#saleAttrSelect').combobox('reset');
-        if(spuSaleAttr&&spuSaleAttr.saleAttrId){
-            $('#saleAttrSelect').combobox('select',spuSaleAttr.saleAttrId);
-        }
-
-        //初始化属性值列表
-        initSpuSaleAttrValueListDatagrid(spuId,spuSaleAttr);
-
-    }
-
-
-    function saveSpuSaleAttr() {
-
-       var spuSaleAttrValueJson= $('#spuSaleAttrValueDg').datagrid('getData');
-       var saleAttrId=$('#saleAttrSelect').combobox("getValue");
-       var saleAttrName=$('#saleAttrSelect').combobox("getText");
-
-        //
-        var rowIndex = $("#spuSaleAttrDg").datagrid("getRowIndex",saleAttrId);
-        console.log("delete rowIndex:"+rowIndex);
-        if(rowIndex>=0){
-             $("#spuSaleAttrDg").datagrid("deleteRow",rowIndex);
-        }
-        $("#spuSaleAttrDg").datagrid("appendRow",{saleAttrId:saleAttrId,saleAttrName:saleAttrName,spuSaleAttrValueJson:spuSaleAttrValueJson});
-
-        $("#spuSaleAttr_dlg").dialog("close");
-
-    }
     function closeSpuSaleAttr() {
-        $("#spuSaleAttr_dlg").dialog("close");
+        $("#spuSaleAttr_dlg").dialog('close');
+    }
 
+    //清空表格数据
+    function clearSaleAttrValueTable(rec){
+        //给将表格数据置空
+        $("#spuSaleAttrValueDg").datagrid({
+            data:[]
+        })
     }
 
 
+
+    //双击编辑功能
+    var spuSaleAttrValueDg_editIndex = undefined;
+    function spuSaleAttrValueDg_endEditing() {
+        if(spuSaleAttrValueDg_editIndex == undefined){return true}
+        if($('#spuSaleAttrValueDg').datagrid('validateRow',spuSaleAttrValueDg_editIndex)){
+           $('#spuSaleAttrValueDg').datagrid('endEdit',spuSaleAttrValueDg_editIndex);
+           spuSaleAttrValueDg_editIndex = undefined;
+           return true;
+        }else{
+           return false;
+        }
+    }
+
+    function spuSaleAttrValueDg_onClickCell(rowIndex, rowData) {
+        if(spuSaleAttrValueDg_endEditing()){
+           /* $('#spuSaleAttrValueDg').datagrid('selectRow',index).datagrid('editCell',{index:index,field:field});
+            spuSaleAttrValueDg_editIndex = index;*/
+            //双击开启编辑行
+            $('#spuSaleAttrValueDg').datagrid("beginEdit", rowIndex);
+            //设定当失去焦点时,退出编辑状态
+            var saleAttrValueName = rowData.saleAttrValueName;
+            $("input.datagrid-editable-input").val(saleAttrValueName)
+                .bind("blur", function(evt) {
+                    $('#spuSaleAttrValueDg').datagrid('endEdit', rowIndex);
+                });
+        }
+
+
+
+    }
+
+    //临时保存销售属性对应的所以值
+    function saveSpuSaleAttr() {
+        var saleAttrId=$('#saleAttrSelect').combobox("getValue");
+        var saleAttrName=$('#saleAttrSelect').combobox("getText");
+        var valueData = $("#spuSaleAttrValueDg").datagrid("getRows");
+
+        var bigSaleAttrAndValues = {
+            id:null,
+            spuId:null,
+            saleAttrId:saleAttrId,
+            saleAttrName:saleAttrName,
+            saleAttrValues:[]
+        }
+
+        $.each(valueData,function(){
+            var attrValueObj = {
+                id:this.id,
+                saleAttrValueName:this.saleAttrValueName
+            }
+            bigSaleAttrAndValues.saleAttrValues.push(attrValueObj)
+        })
+        console.log(bigSaleAttrAndValues);
+        //关闭对话框
+        $("#spuSaleAttr_dlg").dialog('close');
+        $("#spuSaleAttrDg").datagrid('appendRow',bigSaleAttrAndValues);
+
+        //测试刚刚的数据是否可以获取到
+
+        console.log($("#spuSaleAttrValueDg").datagrid('getRows'));
+
+    }
 
 
 
 
     function addSpuSaleAttrValue() {
-        $('#spuSaleAttrValueDg').datagrid("appendRow",{id:'',name:''});
-    }
-
-    function removeSpuSaleAttrValue() {
-        var datagrid=$('#spuSaleAttrValueDg');
-        var row = datagrid.datagrid('getSelected');
-        if (row) {
-            var rowIndex = datagrid.datagrid('getRowIndex', row);
-            datagrid.datagrid('deleteRow', rowIndex);
-        }
+        $('#spuSaleAttrValueDg').datagrid("appendRow",{id:'',saleAttrValueName:''});
     }
 
 
-    function initSpuSaleAttrValueListDatagrid(spuId,spuSaleAttr){
-        var spuSaleAttrValueDg=$("#spuSaleAttrValueDg").datagrid({url:""});
-        spuSaleAttrValueDg.datagrid('loadData', { total: 0, rows: [] });
-        spuSaleAttrValueDg.datagrid({
-            columns:[[
-                { field:'id',title:'销售属性值Id',width:'25%' },
-                { field:'saleAttrId',title:'销售属性Id',hidden:true},
-                { field:'saleAttrValueName',title:'销售属性值名称',width:'75%',
-                    editor: {
-                        type: 'validatebox', options: { required: true}  //必填项
-                    }
-                }
-            ]],
-            onDblClickRow: function (rowIndex, rowData) {
-                //双击开启编辑行
-                spuSaleAttrValueDg.datagrid("beginEdit", rowIndex);
-                //设定当失去焦点时,退出编辑状态
-                var saleAttrValueName = rowData.saleAttrValueName;
-                $("input.datagrid-editable-input").val(saleAttrValueName).bind("blur",function(evt){
-                    spuSaleAttrValueDg.datagrid('endEdit',rowIndex);
-                });
-            }
-        });
 
-        //加载数据  //如果有缓存数据加载缓存数据  如果没有通过前页的spuid和saleAttrid从数据库中查询
-       console.log("spuSaleAttr:"+ JSON.stringify(spuSaleAttr.saleAttrValue)) ;
-        if(spuSaleAttr&&spuSaleAttr.spuSaleAttrValueJson&&spuSaleAttr.spuSaleAttrValueJson!=''){
-            console.log("加载暂存");
-            spuSaleAttrValueDg.datagrid("loadData",spuSaleAttr.spuSaleAttrValueJson);
-        }
-    }
 
 </script>
 

@@ -42,7 +42,10 @@
        						}"
 				style="width: 100px"></select> 三级分类： <select name="ctg3ForAttrList"
 				id="ctg3ForAttrList" class="easyui-combobox"
-				data-options="valueField:'id',textField:'name',method:'get'"
+				data-options="valueField:'id',textField:'name',method:'get',
+							  onSelect:function(rec){
+							  $('#dg').datagrid({url : 'getAttrList?catalog3Id=' + rec.id});
+       						}"
 				style="width: 100px"></select> <a href="#" class="easyui-linkbutton"
 				iconCls="icon-search" onclick="javascript:reloadAttrList()">刷新属性列表</a>
 		</div>

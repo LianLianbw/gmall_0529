@@ -3,7 +3,11 @@ package com.atguigu.gamll.manager.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
 import com.atguigu.gmall.manager.ManageService;
-import com.atguigu.gmall.user.*;
+import com.atguigu.gmall.user.BaseAttrInfo;
+import com.atguigu.gmall.user.BaseCatalog1;
+import com.atguigu.gmall.user.BaseCatalog2;
+import com.atguigu.gmall.user.BaseCatalog3;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,7 +39,6 @@ public class AttrManagerController {
     public String getCatalog1() {
         List<BaseCatalog1> catalog1List = manageService.getCatalog1();
         String catalog1Json = JSON.toJSONString(catalog1List);
-        System.out.println(catalog1Json);
         return catalog1Json;
     }
 
