@@ -21,6 +21,18 @@
         <module>gmall_user_web</module>
         <module>gmall_manager_service</module>
         <module>gmall_manager_web</module>
+        <module>gmall_payment_service</module>
+        <module>gmall_payment_web</module>
+        <module>gmall_cart_service</module>
+        <module>gmall_cart_web</module>
+        <module>gmall_item_web</module>
+        <module>gmall_order_service</module>
+        <module>gmall_order_web</module>
+        <module>gmall_passport_service</module>
+        <module>gmall_passport_web</module>
+        <module>gmall_search_service</module>
+        <module>gmall_search_web</module>
+        <module>rabbitmq-demo</module>
     </modules>
 
 
