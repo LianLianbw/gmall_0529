@@ -4,11 +4,13 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.atguigu.gmall.manager.ManageService;
 import com.atguigu.gmall.manager.mapper.*;
 import com.atguigu.gmall.user.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 @Service
 public class ManageServiceImpl implements ManageService {
